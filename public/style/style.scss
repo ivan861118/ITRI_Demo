@@ -1,0 +1,152 @@
+@mixin clearfix {
+    &:after{
+    content:"";
+    display :table;
+    clear:both;
+    }
+}
+
+* {
+    margin : 0 ;
+    padding : 0 ; 
+    box-sizing:border-box;
+}
+
+html{
+    font-size: 62.5%;//1rem > 10px;
+}
+
+#tetris{
+    margin:0rem auto;
+    display: block;
+    
+}
+
+.score{
+    font-size: 2.5rem;
+    text-transform: uppercase;
+
+  
+}
+
+
+
+
+.container__header{
+    background: black;
+    .heading{
+
+        &-primary{
+            font-size: 3.5rem;
+            color:white;
+        }
+    }
+}
+
+.container__game{
+    margin:5rem auto;
+}
+
+.container__webcam{
+    border: grey solid 5px;
+    margin: 5rem auto;
+
+}
+.dropdown *{
+    font-size: 2rem;
+
+}
+
+//Button
+
+.btn{
+
+    text-transform: uppercase;
+    text-decoration: none; 
+    padding: 1rem 3rem;
+    border-radius: 10rem;
+    display: inline-block;
+    letter-spacing: .5rem;
+    transition: all 0.2s; 
+   
+
+    &:hover{
+        transform: translateY(-2px);
+        box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2); 
+    }
+
+
+    &:active{ 
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);            
+    }
+  
+   
+    // &__game{
+       
+    // }
+    
+}
+
+    
+.row{
+    max-width: 114rem;
+    margin: 0 auto;
+    /* margin-bottom: $gutter-vertical; */
+    @include clearfix;
+ 
+    
+    
+    .col-3 {
+        float: left;
+        width:calc((100% - 6rem)/4);
+    
+        // &:not(:last-child) {
+        //     margin-right: $gutter-horizontal;
+        // }
+    }
+
+    .col-6 {
+        float: left;
+        width:calc((100% - 6rem)/2);
+      
+        // &:not(:last-child) {
+        //     margin-right: $gutter-horizontal;
+        // }
+
+    }
+
+}
+
+#webcam {
+    height: 168px;
+    display: inline-block;
+    border: 5px solid rgb(179, 179, 167)
+  }
+
+
+
+
+
+// .img__container img{
+
+    
+// }
+
+[data-active="up"] .img__container .img,
+[data-active="down"] .img__container .img,
+[data-active="left"] .img__container .img,
+[data-active="right"] .img__container .img {
+  box-shadow: 0 0 4px 4px #ffaa00;
+  border: 5px solid yellow;
+}
+
+.vertical-align-center{
+    vertical-align: middle;
+}
+
+//Utilities
+.u-center{
+    margin:1rem auto;
+    text-align: center;
+}

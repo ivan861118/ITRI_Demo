@@ -1,0 +1,151 @@
+<html >
+<head>
+    <title>Tetris</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"> </script>
+</head>
+<body>
+    <!-- Tetris game-->
+    <div class="container__header">
+        <h1 class='heading-primary'>Tetris Battle</h1>
+    </div>
+
+    
+    <div class="row ">
+
+        <!--Tetris-->
+        <div class="col-6 ">
+            <div class='container__game'>
+                <span class='score'>score:</span>
+                <div class='score' id="score">0</div>
+                <canvas id="tetris" width="240" height="400"></canvas>
+                <div class="u-center">
+                        <button class='btn btn__game--start' id='game__start'>Start</button>
+                        <button class='btn btn__game--pause' id='game__pause'>Pause</button>
+                </div>
+
+            </div>    
+
+        </div>
+
+        <!--Webcam-->
+        
+        <div class="col-6">
+            <div class="container__game">
+                
+                    <h1 class="heading__primary">WebCam</h1>    
+                    <video id ="webcam"  width="224" height="224" autoplay></video>
+                
+
+                <div class="panel vertical-align-center">
+                        <div class="dropdown ">
+                                <label>Learning rate</label>
+                                <div class="select">
+                                    <select id="learningRate">
+                                    <option value="0.00001">0.00001</option>
+                                    <option selected value="0.0001">0.0001</option>
+                                    <option value="0.01">0.001</option>
+                                    <option value="0.03">0.003</option>
+                                    </select>
+                                </div>
+                        </div>
+
+
+                        <!-- Batch size -->
+                        <div class="dropdown">
+                                <label>Batch size</label>
+                                <div class="select">
+                                <select id="batchSizeFraction">
+                                    <option value="0.05">0.05</option>
+                                    <option value="0.1">0.1</option>
+                                    <option selected value="0.4">0.4</option>
+                                    <option value="1">1</option>
+                                </select>
+                                </div>
+                        </div>
+
+                            <!-- Hidden units -->
+                        <div class="dropdown">
+                            <label>Hidden units</label>
+                            <div class="select">
+                            <select id="dense-units">
+                                <option value="10">10</option>
+                                <option selected value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                            </div>
+                        </div>
+
+                        
+                        <button class='btn' id='train'>
+                            <span id='train-status'>train</span>
+                        </button>
+                        <button class='btn' id='predict'>predict</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row data__container">
+                <div class='col-3 img__container'>
+                    <img src="" alt="">
+                    <button class="btn screenshot__btn screenshot__btn--up">up</button>
+                </div>
+
+                <div class="col-3 img__container">
+                    <img src="" alt="">
+                    <button class="btn screenshot__btn screenshot__btn--down">down</button>
+                </div>
+
+                <div class="col-3  img__container">
+                    <img src="" alt="">
+                    <button class="btn screenshot__btn screenshot__btn--left">left</button>
+                </div>
+
+                <div class="col-3 img__container">
+                    <img src="" alt="">
+                    <button class="btn screenshot__btn screenshot__btn--right">right</button>
+                </div>
+        
+            </div>
+
+
+    </div>
+
+    
+   
+   
+
+   
+    
+    
+    
+    <script type="module" src="./src/tetris.js"></script>
+    <script type='module' src="./index.js"></script>
+    
+   
+    <script>
+
+        //--Webcam--
+        var video = document.querySelector("#webcam");
+
+        if (navigator.mediaDevices.getUserMedia) {       
+            navigator.mediaDevices.getUserMedia({video: true})
+          .then(function(stream) {
+            video.srcObject = stream;
+          })
+          .catch(function(error) {
+            console.log("Something went wrong!");
+          });
+        }
+
+
+var img__container = document.querySelectorAll(".img__container");
+var screenshot_btn = document.querySelectorAll('.screenshot__btn'); 
+
+
+
+    </script>
+
+</body>
+</html>
