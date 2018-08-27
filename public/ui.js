@@ -5,11 +5,13 @@ var video = document.querySelector("#webcam");
 
 const CONTROLS = ['up', 'down', 'left', 'right'];
 
+const trainStatusElement = document.getElementById('train-status');
+
 
 
 // Set hyper params from UI values.
 const learningRateElement = document.getElementById('learningRate');
-export const getLearningRate = () => learningRate.value;
+export const getLearningRate = () => +learningRate.value;
 
 
 const batchSizeFractionElement = document.getElementById('batchSizeFraction');
@@ -71,7 +73,7 @@ function getScreenshotURL(){
 }
 
 export function predictClass(classId){
-    document.body.setAttribute('data-active', CONTROLS[classId]);
+    document.getElementById('data__container').setAttribute('data-active', CONTROLS[classId]);
     
 }
 

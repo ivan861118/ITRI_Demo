@@ -193,6 +193,10 @@ function rotate(matrix , dir){
 
 function playerRotate(dir){
     rotate(player.matrix, dir);
+    if(collide(arena,player)){
+        rotate(player.matrix, dir*(-1));
+    }
+    
 }
 
 
@@ -219,6 +223,7 @@ function drawMatrix(matrix, offset){
 
 
 function resetPiece(){
+ 
     const rand = Math.floor(Math.random() * 7);   
     player = {
         matrix:createPiece(piece[rand]),
@@ -227,7 +232,38 @@ function resetPiece(){
     };
     player.pos.y=0;
     player.pos.x=(WIDTH/SCALE)/2-1;
+
+    if(collide(arena,player)){
+      
+        gameover();
+
+
+    }
 }
+
+
+function cleanAll(arena){
+  
+    arena.forEach( (row,y)=>{
+        console.log('y:'+y);
+        row.forEach( (value,x)=>{
+            arena[y][x] = 0;
+        })
+    })
+}
+
+export function gameover(){
+    alert('Game over!!,You score:'+score.innerHTML);
+    
+    score.innerHTML = 0;
+    cleanAll(arena);
+
+    toggleUpdate(0);//pause when gameover
+
+    console.log('game over,restart!');
+  
+}
+
 
 
 
@@ -235,7 +271,6 @@ function draw(){
     context.fillStyle = "#000";
     context.fillRect(0, 0, canvas.width, canvas.height);
     
-
     
     if( collide(arena,player) ){     
         if(player.prev_pos.y < player.pos.y ){
@@ -250,7 +285,6 @@ function draw(){
             player.pos.y = player.prev_pos.y;
             console.log('collide!');
         }
-
     }
 
     drawMatrix(arena, {x:0 , y:0});
@@ -280,10 +314,9 @@ function checkEliminate(){
             counter+=50;
             score.innerHTML=counter;
         }
-    });
-
-    
+    }); 
 }
+
 function isFull(x){
     return x!=0
 }
@@ -293,15 +326,17 @@ let dropInterval = 1000;
 let lastTime = 0;
 
 // Page Refresh
-function update(time=0 ,flag){
+function update(time=0){
 
-    if (exceedTimeInterval(time)) {
-        
+    if (exceedTimeInterval(time)) {     
         fall();
     }
     draw();
     checkEliminate();
-    requestAnimationFrame(update);
+    if(game_start){
+        requestAnimationFrame(update);
+    }
+    
 }
 
 function exceedTimeInterval(time){
@@ -318,32 +353,39 @@ function exceedTimeInterval(time){
 
 
 
+//Pause and Start
 
-const start_btn = document.getElementById('game__start');
-const pause_btn = document.getElementById('game__pause');
-start_btn.addEventListener('click', () => toggleUpdate(1) );
-pause_btn.addEventListener('click', () => toggleUpdate(0) );
 var game_start=false;
 
-function toggleUpdate(flag){
-    flag==true? game_start=1 : game_start=0;
-    if(game_start){
-        update();
-    }else{
-        console.log('pause!');
-    }
+
+export function predictClass(classId){
+    var keyboard = ['UP','DOWN','LEFT','RIGHT'];
+    var keycode = {
+        'UP':38,
+        'DOWN':40,
+        'LEFT':37,
+        'RIGHT':39
+    };
+    let keyPressed = keyboard[classId];
+    console.log('keypressed:'+keyPressed);
 
     
+    //emit keyboard event
+    event = new KeyboardEvent('keydown',{
+        "keyCode":keycode[keyPressed]
+    });
+    document.dispatchEvent(event);
 
 }
 
 
+export function toggleUpdate(flag){
+    flag==true? game_start=1 : game_start=0;
+    update();
+}
 
 
 
-//////////////////////
-// const canvas = document.getElementById('tetris-list');
-// const context = canvas.getContext('2d');
 
 
 

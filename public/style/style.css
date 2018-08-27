@@ -65,12 +65,11 @@ html {
   display: inline-block;
   border: 5px solid #b3b3a7; }
 
-[data-active="up"] .img__container .img,
-[data-active="down"] .img__container .img,
-[data-active="left"] .img__container .img,
-[data-active="right"] .img__container .img {
-  box-shadow: 0 0 4px 4px #ffaa00;
-  border: 5px solid yellow; }
+[data-active="up"] .img__container--up img,
+[data-active="down"] .img__container--down img,
+[data-active="left"] .img__container--left img,
+[data-active="right"] .img__container--right img {
+  box-shadow: 0 0 4px 4px #ffaa00; }
 
 .vertical-align-center {
   vertical-align: middle; }

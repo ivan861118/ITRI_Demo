@@ -1,15 +1,10 @@
 import {Webcam} from "./webcam.js";
 import {ControllerDataset} from './controller_dataset.js';
 import * as ui from './ui.js';
+import * as tetris from './src/tetris.js';
+
 // import * as model from './model';
 
-// const cam_dom =  document.getElementById('webcam');
-// cam_dom.addEventListener('loadeddata',function(){
-//   const webcam = new Webcam(cam_dom);
-//   const img = webcam.capture();
-//   img.print();
-
-// })
 
 
   
@@ -25,6 +20,7 @@ const webcam = new Webcam(document.getElementById('webcam'));
 
 // The dataset object where we will store activations.
 const controllerDataset = new ControllerDataset(NUM_CLASSES);
+console.log(controllerDataset);
 
 let mobilenet;
 let model;
@@ -55,9 +51,9 @@ ui.setExampleHandler(label => {
       console.log('webcam dim ='+img.shape[1]+'x'+img.shape[2]+'x'+img.shape[3]);
     
       controllerDataset.addExample(mobilenet.predict(img), label);
-      console.log('Dataset dim ='+controllerDataset.shape[0]+'x'+controllerDataset.shape[1]+'x'+controllerDataset.shape[2]);
 
-      console.log('add data success');
+
+      console.log('Add data success');
    
   
     });
@@ -108,9 +104,17 @@ const optimizer = tf.train.adam(ui.getLearningRate());
 
 
 
+const batchSize =
+  Math.floor(controllerDataset.xs.shape[0] * ui.getBatchSizeFraction());  
+if (!(batchSize > 0)) {
+throw new Error(
+    `Batch size is 0 or NaN. Please choose a non-zero fraction.`);
+}
+
+
   // Train the model! Model.fit() will shuffle xs & ys so we don't have to.
   model.fit(controllerDataset.xs, controllerDataset.ys, {
-    batchSize:ui.getBatchSizeFraction(),
+    batchSize,
     callbacks: {
       onBatchEnd: async (batch, logs) => {
         ui.trainStatus('Loss: ' + logs.loss.toFixed(5));
@@ -125,7 +129,8 @@ let isPredicting = false;
 
 async function predict(){
     // ui.isPredicting();
-    // while (isPredicting) {
+    while(isPredicting){
+
       const predictedClass = tf.tidy(() => {
         // Capture the frame from the webcam.
         const img = webcam.capture();
@@ -141,10 +146,17 @@ async function predict(){
         // // from mobilenet as input.
         
         const predictions = model.predict(activation);
+        
 
         tf.print("predict tensor="+predictions);
 
 
+
+        const threshold = 0.4;
+        const thres_tensor = tf.fill([1,4],threshold);
+        
+
+        // predictions.as1Dgreater[thres_tensor].argMax()
         
   
         // Returns the index with the maximum probability. This number corresponds
@@ -158,17 +170,15 @@ async function predict(){
       predictedClass.dispose();
   
       ui.predictClass(classId);
+      tetris.predictClass(classId);
+      
       await tf.nextFrame();
-    // }
+      
+    }
     
     // ui.donePredicting();
-  
 
 }
-
-
-
-
 
 
 
@@ -178,9 +188,16 @@ document.getElementById('train').addEventListener('click', async () => {
   train();
 });
 
-document.getElementById('predict').addEventListener('click', () => {
+document.getElementById('predict').addEventListener('click', (e) => {
 
-  isPredicting = true;
+  if(isPredicting == false){
+
+    isPredicting = true;
+    e.target.innerHTML = 'stop';
+  }else{
+    isPredicting = false;
+    e.target.innerHTML = 'predict';
+  }
   predict();
 });
 
@@ -202,5 +219,19 @@ async function init() {
   
 // Initialize the application.
 init();
+
+
+//Tetris
+const start_btn = document.getElementById('game__start');
+const pause_btn = document.getElementById('game__pause');
+const start_and_predict_btn = document.getElementById('game__predict');
+
+start_btn.addEventListener('click', () => tetris.toggleUpdate(1) );
+pause_btn.addEventListener('click', () => tetris.toggleUpdate(0) );
+start_and_predict_btn.addEventListener('click', () => {
+  isPredicting=true;
+  predict();
+  tetris.toggleUpdate(1); 
+});
 
 
