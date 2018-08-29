@@ -376,6 +376,8 @@ export function predictClass(classId){
     });
     document.dispatchEvent(event);
 
+    draw();
+
 }
 
 

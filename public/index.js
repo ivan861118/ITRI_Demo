@@ -26,6 +26,9 @@ let mobilenet;
 let model;
 
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+
 // Loads mobilenet and returns a model that returns the internal activation
 // we'll use as input to our classifier model.
 async function loadMobilenet() {
@@ -131,7 +134,7 @@ async function predict(){
     // ui.isPredicting();
     while(isPredicting){
 
-      const predictedClass = tf.tidy(() => {
+      const predictions = tf.tidy(() => {
         // Capture the frame from the webcam.
         const img = webcam.capture();
   
@@ -152,27 +155,49 @@ async function predict(){
 
 
 
-        const threshold = 0.4;
-        const thres_tensor = tf.fill([1,4],threshold);
         
 
-        // predictions.as1Dgreater[thres_tensor].argMax()
+        
+
+
+
+
+        
+        
         
   
         // Returns the index with the maximum probability. This number corresponds
         // to the class the model thinks is the most probable given the input.
-        return predictions.as1D().argMax();
+        // return predictions.as1D().argMax();
+
+        return predictions;
+
+      
       });
 
-      console.log('predicted class:'+predictedClass);
-  
-      const classId = (await predictedClass.data())[0];
-      predictedClass.dispose();
+      // console.log('predicted class:'+predictedClass);
+
+      //
+
+      const threshold = 0.5; //the predicion is valid when greater than threshold
+      const thres_tensor = tf.fill([4],threshold);
+      
+
+      const predictedClass = (await predictions.as1D().argMax().data())[0];
+      const prob = (await predictions.data())[predictedClass];
+
+      if(prob > threshold){
+
+      const classId = predictedClass;
   
       ui.predictClass(classId);
       tetris.predictClass(classId);
       
+      await delay(500);
+
       await tf.nextFrame();
+
+      }
       
     }
     
